@@ -41,4 +41,12 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    /**
+     * Get the car associated with the user.
+     */
+    public function car()
+    {
+        return $this->hasOne(Car::class);
+    }
 }

@@ -1,0 +1,185 @@
+openapi: 3.0.3
+info:
+  title: Carsharing - OpenAPI 3.0
+  version: 0.0.1
+servers:
+  - url: http://localhost/api/
+paths:
+  /car/all:
+    get:
+      tags:
+        - car
+      summary: Get all cars
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Car'
+  /car/free:
+    get:
+      tags:
+        - car
+      summary: Get only free cars
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Car'
+  /car/my:
+    get:
+      tags:
+        - car
+      summary: Get your car
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Car'
+      security:
+        - api_key:
+            - write:cars
+  /car/change:
+    put:
+      tags:
+        - car
+      summary: Change user car by admin
+      parameters:
+        - name: api_key
+          in: header
+          description: ''
+          required: false
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                car_id:
+                  type: integer
+                user_id:
+                  type: integer
+              required:
+                - car_id
+                - user_id
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  info:
+                    type: string
+                    example: 'successfull change'
+        '400':
+          description: Missed parameter
+        '403':
+          description: Not allowed
+        '404':
+          description: Not found
+  /car/cancel:
+    put:
+      tags:
+        - car
+      summary: Cancel using car by user
+      parameters:
+        - name: api_key
+          in: header
+          description: ''
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  info:
+                    type: string
+                    example: 'car is cancelled'
+  /car/book:
+    put:
+      tags:
+        - car
+      summary: Booking car by user
+      parameters:
+        - name: api_key
+          in: header
+          description: ''
+          required: false
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                car_id:
+                  type: integer
+              required:
+                - car_id
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  info:
+                    type: string
+                    example: 'car is booked'
+        '400':
+          description: Missed parameter
+        '403':
+          description: Not allowed
+        '404':
+          description: Not found
+components:
+  schemas:
+    Car:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: '1'
+          format: int64
+        name:
+          type: string
+          example: 'Toyota Mark II'
+        user_id:
+          type: integer
+          example: null
+          format: int64
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+      xml:
+        name: car
+  securitySchemes:
+    api_key:
+      type: apiKey
+      name: api_key
+      in: header
